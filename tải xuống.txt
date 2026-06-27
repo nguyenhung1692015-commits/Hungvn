@@ -1,0 +1,64 @@
+local Player = game.Players.LocalPlayer
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local Character = Player.Character or Player.CharacterAdded:Wait()
+local HRP = Character:WaitForChild("HumanoidRootPart")
+
+local Flying = false
+local Speed = 50
+
+local BV, BG
+
+local function StartFly()
+	if Flying then return end
+	Flying = true
+
+	BV = Instance.new("BodyVelocity")
+	BV.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+	BV.Parent = HRP
+
+	BG = Instance.new("BodyGyro")
+	BG.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+	BG.P = 10000
+	BG.Parent = HRP
+
+	RunService:BindToRenderStep("hungvnFly", Enum.RenderPriority.Character.Value, function()
+		if Flying then
+			local Cam = workspace.CurrentCamera
+			BG.CFrame = Cam.CFrame
+			BV.Velocity = Cam.CFrame.LookVector * Speed
+		end
+	end)
+end
+
+local function StopFly()
+	Flying = false
+
+	RunService:UnbindFromRenderStep("hungvnFly")
+
+	if BV then BV:Destroy() end
+	if BG then BG:Destroy() end
+end
+
+UIS.InputBegan:Connect(function(Input, GP)
+	if GP then return end
+
+	if Input.KeyCode == Enum.KeyCode.F then
+		if Flying then
+			StopFly()
+		else
+			StartFly()
+		end
+	end
+
+	if Input.KeyCode == Enum.KeyCode.E then
+		Speed = Speed + 10
+		print("Speed:", Speed)
+	end
+
+	if Input.KeyCode == Enum.KeyCode.Q then
+		Speed = math.max(10, Speed - 10)
+		print("Speed:", Speed)
+	end
+end)
