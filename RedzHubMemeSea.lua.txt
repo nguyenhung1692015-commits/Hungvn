@@ -1,5 +1,5 @@
 --[[
-	redz Hub - Meme Sea (cleaned source)
+	hưng Hub - Meme Sea (cleaned source)
 
 	Rebuilt from the deobfuscated dump (redz.txt):
 	  * removed the loader's "blacklist" self-destruct module and its disk flag
